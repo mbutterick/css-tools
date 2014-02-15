@@ -4,6 +4,7 @@
          "colors.rkt"
          "column.rkt"
          "font-face.rkt"
+         "html.rkt"
          "gradient.rkt"
          "misc.rkt"
          "transition.rkt"
@@ -15,6 +16,7 @@
                        "colors.rkt"
                        "font-face.rkt"
                        "gradient.rkt"
+                       "html.rkt"
                        "misc.rkt"
                        "transition.rkt"
                        "typography.rkt"))
