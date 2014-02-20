@@ -2,9 +2,9 @@
 (require "core.rkt")
 
 (provide (all-defined-out))
-(define empty '())
 
 (define (make-css-columns #:count count #:gap [gap #f])
+  (define empty '())
   ; shorthand for css column declaration
   (join-css-strings  (append
                       (make-css-strings css-property-prefixes "column-count" count)
