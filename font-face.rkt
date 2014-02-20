@@ -6,6 +6,7 @@
 
 (module+ test (require rackunit))
 
+(require racket/contract sugar)
 
 (define/contract (base64-font-string? x)
   (any/c . -> . boolean?)

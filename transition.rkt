@@ -10,7 +10,7 @@
                       (make-css-strings transition-prefixes "transition-duration" duration)
                       (if timing-function
                           (make-css-strings transition-prefixes "transition-timing-function" timing-function)
-                          empty)
+                          '())
                       (if delay
                           (make-css-strings transition-prefixes "transition-delay" delay)
-                          empty))))
+                          '()))))
