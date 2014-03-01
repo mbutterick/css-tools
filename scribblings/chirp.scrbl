@@ -3,34 +3,34 @@
 @(require scribble/eval (for-label racket "../main.rkt"))
 
 @(define my-eval (make-base-eval))
-@(my-eval `(require css-tools))
+@(my-eval `(require chirp))
 
 
-@title{css-tools}
+@title{chirp}
 
 @author[(author+email "Matthew Butterick" "mb@mbtype.com")]
 
-A collection of little functions that help make Racket code more readable.
+Chirp = CSS & HTML Racket preprocessor.
 
 @section{Installation & updates}
 
 At the command line:
-@verbatim{raco pkg install css-tools}
+@verbatim{raco pkg install chirp}
 
 After that, you can update the package from the command line:
-@verbatim{raco pkg update css-tools}
+@verbatim{raco pkg update chirp}
 
 
 @section{Interface}
 
-@defmodule[css-tools]
+@defmodule[chirp]
 
-Hello css-tools.
+Hello chirp.
 
 
 @section{License & source code}
 
 This module is licensed under the LGPL.
 
-Source repository at @link["http://github.com/mbutterick/css-tools"]{http://github.com/mbutterick/css-tools}. Suggestions & corrections welcome.
+Source repository at @link["http://github.com/mbutterick/chirp"]{http://github.com/mbutterick/chirp}. Suggestions & corrections welcome.
 
