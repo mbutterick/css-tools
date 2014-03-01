@@ -1,3 +1,3 @@
 #lang info
-(define collection "chirp")
-(define scribblings '(("scribblings/chirp.scrbl" ())))
+(define collection "css-tools")
+(define scribblings '(("scribblings/css-tools.scrbl" ())))

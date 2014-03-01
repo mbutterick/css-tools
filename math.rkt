@@ -1,7 +1,7 @@
 #lang racket/base
-(require "core.rkt" racket/match sugar/define/contract sugar/container sugar/coercion/values racket/string racket/list)
+(require "core.rkt" racket/match)
 
-(define+provide/contract (css-unit? x)
+(define/contract (css-unit? x)
   (any/c . -> . boolean?)
   (x . in? . '("%" "in" "cm" "mm" "em" "ex" "pt" "pc" "px" "rem")))
 
@@ -10,17 +10,17 @@
   [(define write-proc 
      (λ(x port mode) (display (format "~a~a" (cssq-num x) (cssq-unit x)) port)))])
 
-(define+provide/contract (cssqish? x)
+(define/contract (cssqish? x)
   (any/c . -> . boolean?)
   (->boolean (or (cssq? x) (string? x))))
 
-(define+provide/contract (string->unit x)
+(define/contract (string->unit x)
   (string? . -> . css-unit?)
   (if (css-unit? x)
       x
       (error 'string->unit "'~a' not a valid css unit" x)))
 
-(define+provide/contract (cssqish->cssq x)
+(define/contract (cssqish->cssq x)
   (cssqish? . -> . cssq?)
   (cond
     [(cssq? x) x]
@@ -34,7 +34,7 @@
                      (list (string->number (first pieces)) 
                            (string->unit (second pieces))))))]))
 
-(define+provide/contract (css-math-op op left right)
+(define/contract (css-math-op op left right)
   (procedure? cssqish? cssqish? . -> . cssq?)
   (let ([left (cssqish->cssq left)]
         [right (cssqish->cssq right)])

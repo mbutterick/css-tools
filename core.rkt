@@ -1,6 +1,6 @@
 #lang racket/base
 (require racket/string racket/list)
-(require sugar/string sugar/coercion/values)
+(require sugar/string sugar/coerce)
 
 (provide (all-defined-out))
 
