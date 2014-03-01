@@ -1,5 +1,5 @@
 #lang racket/base
-(require "core.rkt" racket/match)
+(require "core.rkt" racket/match racket/contract racket/string racket/list sugar/container sugar/coerce)
 
 (define/contract (css-unit? x)
   (any/c . -> . boolean?)
