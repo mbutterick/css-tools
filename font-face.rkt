@@ -1,6 +1,5 @@
 #lang racket/base
 (require "core.rkt")
-(require pollen/file)
 (require net/url-structs net/base64 racket/file)
 (provide (all-defined-out))
 
