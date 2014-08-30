@@ -80,7 +80,10 @@
   
   (join-css-strings (append
                      (make-css-strings '("-moz-") feature-tag-property feature-tag-string-old-firefox)
-                     (make-css-strings css-property-prefixes feature-tag-property feature-tag-string))))
+                     ;; Safari no longer supports OT features
+                     ;; Chrome 37 on OS X breaks them
+                     ;; so remove webkit from OT features for now
+                     (make-css-strings (remove "-webkit-" css-property-prefixes) feature-tag-property feature-tag-string))))
 
 
 (define (make-css-hyphens [value "auto"])
