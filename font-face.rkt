@@ -1,6 +1,6 @@
 #lang racket/base
 (require "core.rkt")
-(require net/url-structs net/base64 racket/file)
+(require net/url-structs net/base64 racket/file racket/format racket/list)
 (provide (all-defined-out))
 
 (module+ test (require rackunit))
@@ -59,8 +59,41 @@
   ;; for CSS, base64 encode needs to be done with no line separator
   (format "data:~a;charset=utf-8;base64,~a" (font-mime-type p) (base64-encode (file->bytes path) #"")))
 
+(define (valid-font-style? x)
+  (and (string? x) (member x '("normal" "italic" "oblique")) #t))
 
+(module+ test
+  (check-true (valid-font-style? "normal"))
+  (check-true (valid-font-style? "oblique"))
+  (check-false (valid-font-style? "foobar")))
 
+(define (valid-font-weight? x)
+  (and (string? x) (member x `("normal" "bold" ,@(map ~a (range 100 1000 100)))) #t))
+
+(module+ test
+  (check-true (valid-font-weight? "normal"))
+  (check-true (valid-font-weight? "100"))
+  (check-true (valid-font-weight? "300"))
+  (check-true (valid-font-weight? "900"))
+  (check-false (valid-font-weight? "italic"))
+  (check-false (valid-font-weight? "1000")))
+
+(define (valid-font-stretch? x)
+  (and (string? x) (member x '("normal"
+  "ultra-condensed"
+  "extra-condensed"
+  "condensed"
+  "semi-condensed"
+  "semi-expanded"
+  "expanded"
+  "extra-expanded"
+  "ultra-expanded")) #t))
+
+(module+ test
+  (check-true (valid-font-stretch? "normal"))
+  (check-true (valid-font-stretch? "extra-condensed"))
+  (check-false (valid-font-stretch? "italic"))
+  (check-false (valid-font-stretch? "nonsense")))
 
 (define/contract (font-face-declaration font-family 
                                         src-url
@@ -69,7 +102,7 @@
                                         #:font-stretch [font-stretch "normal"]
                                         #:base64 [base64? #f])
   ((string? (or/c urlish? base64-font-string?)) 
-   (#:font-style string?  #:font-weight string? #:font-stretch string? #:base64 boolean?)
+   (#:font-style valid-font-style?  #:font-weight valid-font-weight? #:font-stretch valid-font-stretch? #:base64 boolean?)
    . ->* . string?)
   (let* [(url (->url src-url))
          (url-value (if base64? (path->base64-font-string src-url) (->path url)))
