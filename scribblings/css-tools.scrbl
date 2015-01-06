@@ -21,12 +21,6 @@ After that, you can update the package from the command line:
 @verbatim{raco pkg update css-tools}
 
 
-@section{Interface}
-
-@defmodule[css-tools]
-
-Hello css-tools.
-
 
 @section{License & source code}
 
