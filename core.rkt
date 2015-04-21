@@ -47,15 +47,17 @@
                           "outline-style: none")))
 
 
-(define (make-media-query starting-size ending-size max-width interval)
+(define (make-media-query starting-size ending-size max-width interval [step-size 1])
   (string-join (cons (format "@media all {html {font-size: ~apx;}}" starting-size)
-                     (for/list ([size (in-range starting-size (sub1 ending-size) -1)])
+                     (for/list ([size (in-range starting-size (sub1 ending-size) (* -1 step-size))]
+                                #:unless (< size ending-size))
                        (format "@media all and (max-width:~apx){html {font-size: ~apx;}}" 
                                (- max-width (* interval (- starting-size size))) size))) "\n"))
 
 
 (module+ main
-  (display (make-media-query 15 11 980 60)))
+  (displayln (make-media-query 15 11 980 60))
+  (displayln (make-media-query 15 11 980 60 .5)))
 
 (define (make-css-ot-features feature-tags [feature-values 1])
   ; if single value provided, upconvert to list
@@ -133,8 +135,3 @@
   
   ; put fallback string at front of list
   (join-css-strings (cons fallback-string gradient-strings)))
-
-(module+ main
-  (display (make-css-background-gradient (list "hsl(216, 78%, 95%)" "hsl(0, 0%, 99%)") 
-                                         (list "0%" "100%")
-                                         #:direction "to top right")))
