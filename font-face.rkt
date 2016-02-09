@@ -1,6 +1,6 @@
 #lang racket/base
 (require "core.rkt")
-(require net/url-structs net/base64 racket/file racket/format racket/list)
+(require net/url-structs net/base64 racket/file racket/format racket/list sugar/unstable/string)
 (provide (all-defined-out))
 
 (module+ test (require rackunit))
