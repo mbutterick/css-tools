@@ -80,14 +80,14 @@
 
 (define (valid-font-stretch? x)
   (and (string? x) (member x '("normal"
-  "ultra-condensed"
-  "extra-condensed"
-  "condensed"
-  "semi-condensed"
-  "semi-expanded"
-  "expanded"
-  "extra-expanded"
-  "ultra-expanded")) #t))
+                               "ultra-condensed"
+                               "extra-condensed"
+                               "condensed"
+                               "semi-condensed"
+                               "semi-expanded"
+                               "expanded"
+                               "extra-expanded"
+                               "ultra-expanded")) #t))
 
 (module+ test
   (check-true (valid-font-stretch? "normal"))
@@ -97,16 +97,18 @@
 
 (define/contract (font-face-declaration font-family 
                                         src-url
+                                        #:local [local-name #f]
                                         #:font-style [font-style "normal"] 
                                         #:font-weight [font-weight "normal"]
                                         #:font-stretch [font-stretch "normal"]
                                         #:base64 [base64? #f])
   ((string? (or/c urlish? base64-font-string?)) 
-   (#:font-style valid-font-style?  #:font-weight valid-font-weight? #:font-stretch valid-font-stretch? #:base64 boolean?)
+   (#:font-style valid-font-style?  #:font-weight valid-font-weight? #:font-stretch valid-font-stretch? #:base64 boolean? #:local (or/c #f string?))
    . ->* . string?)
-  (let* [(url (->url src-url))
-         (url-value (if base64? (path->base64-font-string src-url) (->path url)))
-         (src (format "url('~a') format('~a')" url-value (font-format src-url)))]
+  (let* ([url (->url src-url)]
+         [url-value (if base64? (path->base64-font-string src-url) (->path url))]
+         [src (format "url('~a') format('~a')" url-value (font-format src-url))]
+         [src (string-append (if local-name (format "local(~v), " local-name) "") src)])
     (string-append "@font-face {\n" 
                    (join-css-strings (map make-css-string 
                                           '(font-family font-style font-weight font-stretch src)
