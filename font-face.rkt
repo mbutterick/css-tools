@@ -101,21 +101,29 @@
                                         #:font-style [font-style "normal"] 
                                         #:font-weight [font-weight "normal"]
                                         #:font-stretch [font-stretch "normal"]
+                                        #:unicode-range [unicodes #f]
                                         #:base64 [base64? #f])
   ((string? (or/c urlish? base64-font-string?)) 
-   (#:font-style valid-font-style?  #:font-weight valid-font-weight? #:font-stretch valid-font-stretch? #:base64 boolean? #:local (or/c #f string?))
+   (#:font-style valid-font-style?
+    #:font-weight valid-font-weight?
+    #:font-stretch valid-font-stretch?
+    #:unicode-range (or/c #f string?)
+    #:base64 boolean?
+    #:local (or/c #f string?))
    . ->* . string?)
   (let* ([url (->url src-url)]
          [url-value (if base64? (path->base64-font-string src-url) (->path url))]
          [src (format "url('~a') format('~a')" url-value (font-format src-url))]
          [src (string-append (if local-name (format "local(~v), " local-name) "") src)])
     (string-append "@font-face {\n" 
-                   (join-css-strings (map make-css-string 
-                                          '(font-family font-style font-weight font-stretch src)
-                                          (list font-family font-style font-weight font-stretch src)))
+                   (join-css-strings (append
+                                      (map make-css-string 
+                                           '(font-family font-style font-weight font-stretch src)
+                                           (list font-family font-style font-weight font-stretch src))
+                                      (if unicodes
+                                          (list (make-css-string 'unicode-range unicodes))
+                                          null)))
                    "}")))
 
 (define ffd font-face-declaration)
 
-;;(module+ main
-;;(display (ffd "Miso" "charter-regular.woff" #:font-style "italic" #:font-weight "700" #:base64 #t)))
