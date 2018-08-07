@@ -12,7 +12,7 @@
       (string-append out-string line-ending)))
 
 (define (make-css-string p v)
-    (string-join (list (->string p) (->string v)) ": "))
+  (string-join (list (->string p) (->string v)) ": "))
 
 (define (make-css-strings property-prefixes property-suffix values)
   ; general function for creating groups of css properties
@@ -47,8 +47,8 @@
   (string-join (cons (format "@media all {html {font-size: ~apx;}}" starting-size)
                      (for/list ([size (in-range starting-size (sub1 ending-size) (* -1 step-size))]
                                 #:unless (< size ending-size))
-                       (format "@media all and (max-width:~apx){html {font-size: ~apx;}}" 
-                               (- max-width (* interval (- starting-size size))) size))) "\n"))
+                               (format "@media all and (max-width:~apx){html {font-size: ~apx;}}" 
+                                       (- max-width (* interval (- starting-size size))) size))) "\n"))
 
 
 (module+ main
@@ -113,7 +113,11 @@
   
   ; set up gradient options
   (define gradient-type (if radial "radial" "linear"))
-  (define gradient-direction (or direction (if horizontal "left" "top")))
+  (define gradient-direction
+    (format "~a~a" (if radial "circle at " "")
+            (if direction
+                (if horizontal "left" "top")
+                "center")))
   
   ; can't use standard make-css-strings in this case because the prefixes appear in the value,
   ; not in the property (which is always "background")
