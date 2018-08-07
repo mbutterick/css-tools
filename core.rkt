@@ -4,8 +4,6 @@
 
 (provide (all-defined-out))
 
-(define css-property-prefixes '("-moz-" "-webkit-" "-o-" "-ms-" ""))
-
 (define (join-css-strings properties)
   (define line-ending ";\n")
   (define out-string (string-join properties line-ending))
@@ -42,8 +40,6 @@
 
 (define (make-css-editable)
   (join-css-strings (list "user-modify: read-write"
-                          "-moz-user-modify: read-write"
-                          "-webkit-user-modify: read-write-plaintext-only"
                           "outline-style: none")))
 
 
@@ -73,20 +69,13 @@
   ; with form style="[string]" so double quotes are irritating
   (define feature-tag-string (string-join (map (λ(tag value) (format "'~a' ~a" tag value)) feature-tags feature-values) ", "))
   
-  ; I hate accommodating old browsers but I'll make an exception because OT support is 
-  ; critical to most MB projects
-  ; if this comes before new-style -moz- declaration, it will work for all.
-  (define feature-tag-string-old-firefox (string-join (map (λ(tag value) (format "'~a=~a'" tag value)) feature-tags feature-values) ", "))
-  
   (define feature-tag-property "font-feature-settings")
   
-  (join-css-strings (append
-                     (make-css-strings '("-moz-") feature-tag-property feature-tag-string-old-firefox)
-                     (make-css-strings css-property-prefixes feature-tag-property feature-tag-string))))
+  (make-css-string feature-tag-property feature-tag-string))
 
 
 (define (make-css-hyphens [value "auto"])
-  (join-css-strings (make-css-strings css-property-prefixes "hyphens" value)))
+  (make-css-string "hyphens" value))
 
 (define (make-css-small-caps)
   (join-css-strings (list "text-transform: lowercase" (make-css-ot-features "c2sc"))))
@@ -128,10 +117,10 @@
   
   ; can't use standard make-css-strings in this case because the prefixes appear in the value,
   ; not in the property (which is always "background")
-  (define gradient-strings (map (λ(prefix) (format "background: ~a~a-gradient(~a, ~a)" prefix gradient-type gradient-direction color-stop-string)) css-property-prefixes))
+  (define gradient-string (format "background: ~a-gradient(~a, ~a)" gradient-type gradient-direction color-stop-string))
   
   ; just fill with the last color if gradient not available
   (define fallback-string (format "background: ~a" (last colors)))
   
   ; put fallback string at front of list
-  (join-css-strings (cons fallback-string gradient-strings)))
+  (join-css-strings (list fallback-string gradient-string)))
