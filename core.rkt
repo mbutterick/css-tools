@@ -12,13 +12,13 @@
       (string-append out-string line-ending)))
 
 (define (make-css-string p v)
-  (string-join (list (->string p) (->string v)) ": "))
+  (format "~a: ~a;" p v))
 
 (define (make-css-strings property-prefixes property-suffix values)
   ; general function for creating groups of css properties
   ; with browser prefixes and one value
   (define (map-suffix suffix prefixes)
-    (map (λ(prefix) (string-append prefix suffix)) prefixes))
+    (map (λ (prefix) (format "~a~a" prefix suffix)) prefixes))
   
   
   (define properties (map-suffix property-suffix property-prefixes))
