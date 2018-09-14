@@ -4,12 +4,17 @@
 
 (provide (all-defined-out))
 
-(define (join-css-strings properties)
-  (define line-ending ";\n")
-  (define out-string (string-join properties line-ending))
-  (if (out-string . ends-with? . line-ending) ; might already have the line ending, so don't duplicate it
-      out-string
-      (string-append out-string line-ending)))
+(define (join-css-strings prop-strs)
+  (define prop-terminator ";")
+  (define newline "\n")
+  (define full-terminator (string-append prop-terminator newline))
+  (string-join
+   (for/list ([prop-str (in-list prop-strs)])
+             (string-append prop-str
+                            (cond
+                              [(prop-str . ends-with? . full-terminator) ""]
+                              [(prop-str . ends-with? . prop-terminator) newline]
+                              [else full-terminator]))) ""))
 
 (define (make-css-string p v)
   (format "~a: ~a;" p v))
