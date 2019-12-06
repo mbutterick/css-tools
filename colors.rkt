@@ -21,8 +21,8 @@
 
 
 ;; this makes things work on exact numbers by default
-(read-decimal-as-inexact #f)
-
+(define (string->exact str)
+  (string->number str 10 'number-or-false 'decimal-as-exact))
 
 (define unitval? (real-in 0 1))
 
@@ -71,7 +71,7 @@
 
 
 (define (degree-string? x)
-  (and (string? x) (degree? (string->number x))))
+  (and (string? x) (degree? (string->exact x))))
 
 (define/contract (unitval->degree u)
   (unitval? . -> . degree-string?)
@@ -97,7 +97,7 @@
 
 (define/contract (degree-string->unitval d)
   (degree-string? . -> . unitval?)
-  (/ (string->number d) DEGREE_MAX))
+  (/ (string->exact d) DEGREE_MAX))
 
 (module+ test 
   (check-equal? (degree-string->unitval "0") 0)
@@ -118,7 +118,7 @@
   (any/c . -> . boolean?)
   (and (string? x)
        (equal? #\% (car (reverse (string->list x))))
-       ((real-in 0 100) (string->number (trim-unitval-sign x)))))
+       ((real-in 0 100) (string->exact (trim-unitval-sign x)))))
 
 (module+ test
   (check-true (unitval-string? "56%"))
@@ -131,7 +131,7 @@
 
 (define/contract (unitval-string->unitval x)
   (unitval-string? . -> . unitval?)
-  (/ (string->number (trim-unitval-sign x)) 100))
+  (/ (string->exact (trim-unitval-sign x)) 100))
 
 (module+ test
   (check-equal? (unitval-string->unitval "50%") (/ 1 2))  
@@ -143,7 +143,7 @@
   (string-trim x "#" #:right? #f))
 
 (define (make-hex-number x)
-  (string->number (string-append "#x" (trim-pound-sign x))))
+  (string->exact (string-append "#x" (trim-pound-sign x))))
 
 
 (define HEX_DIGITS (string->list "0123456789abcdef"))
