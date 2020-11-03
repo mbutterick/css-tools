@@ -21,17 +21,19 @@
   (case (get-ext (->path p))
     [("eot") "embedded-opentype"]
     [("woff") "woff"]
+    [("woff2") "woff2"]
     [("ttf" "otf") "truetype"] ; yep, in this CSS declaration, otf is considered 'truetype'
     [("svg") "svg"]
-    [else #f]))
+    [else (raise-argument-error 'font-format "valid font type" p)]))
 
 (module+ test
   (check-equal? (font-format "foo.eot") "embedded-opentype")
   (check-equal? (font-format "foo.woff") "woff")
+  (check-equal? (font-format "foo.woff2") "woff2")
   (check-equal? (font-format "foo.ttf") "truetype")
   (check-equal? (font-format "foo.otf") "truetype")
   (check-equal? (font-format "foo.svg") "svg")
-  (check-false (font-format "foo")))
+  (check-exn exn:fail? (λ () (font-format "foo"))))
 
 
 (define/contract (font-mime-type p)
@@ -39,18 +41,20 @@
   (case (get-ext (->path p))
     [("eot") "application/vnd.ms-fontobject"]
     [("woff") "application/font-woff"]
+    [("woff2") "application/font-woff2"]
     [("ttf") "application/x-font-truetype"]
     [("otf") "application/x-font-opentype"]
     [("svg") "image/svg+xml"]
-    [else #f]))
+    [else (raise-argument-error 'font-mime-type "valid font type" p)]))
 
 (module+ test
   (check-equal? (font-mime-type "foo.eot") "application/vnd.ms-fontobject")
   (check-equal? (font-mime-type (->url "foo.woff?bar=ino")) "application/font-woff")
+  (check-equal? (font-mime-type (->url "foo.woff2?bar=ino")) "application/font-woff2")
   (check-equal? (font-mime-type "foo.ttf") "application/x-font-truetype")
   (check-equal? (font-mime-type "foo.otf") "application/x-font-opentype")
   (check-equal? (font-mime-type "foo.svg") "image/svg+xml")
-  (check-false (font-mime-type "foo")))
+  (check-exn exn:fail? (λ () (font-mime-type "foo"))))
 
 
 (define/contract (path->base64-font-string p)
