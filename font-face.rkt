@@ -105,12 +105,14 @@
                                         #:font-style [font-style "normal"] 
                                         #:font-weight [font-weight "normal"]
                                         #:font-stretch [font-stretch "normal"]
+                                        #:font-display [font-display "auto"]
                                         #:unicode-range [unicodes #f]
                                         #:base64 [base64? #f])
   ((string? (or/c urlish? base64-font-string?)) 
    (#:font-style valid-font-style?
     #:font-weight valid-font-weight?
     #:font-stretch valid-font-stretch?
+    #:font-display string?
     #:unicode-range (or/c #f string?)
     #:base64 boolean?
     #:local (or/c #f string?))
@@ -122,8 +124,8 @@
     (string-append "@font-face {\n" 
                    (join-css-strings (append
                                       (map make-css-string 
-                                           '(font-family font-style font-weight font-stretch src)
-                                           (list font-family font-style font-weight font-stretch src))
+                                           '(font-family font-style font-weight font-stretch font-display src)
+                                           (list font-family font-style font-weight font-stretch font-display src))
                                       (if unicodes
                                           (list (make-css-string 'unicode-range unicodes))
                                           null)))
