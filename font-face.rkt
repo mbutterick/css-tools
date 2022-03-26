@@ -72,13 +72,17 @@
   (check-false (valid-font-style? "foobar")))
 
 (define (valid-font-weight? x)
-  (and (string? x) (member x `("normal" "bold" ,@(map ~a (range 100 1000 100)))) #t))
+  (define str (format "~a" x))
+  (and (string? str) (member str `("normal" "bold" ,@(map ~a (range 100 1000 100)))) #t))
 
 (module+ test
   (check-true (valid-font-weight? "normal"))
   (check-true (valid-font-weight? "100"))
   (check-true (valid-font-weight? "300"))
   (check-true (valid-font-weight? "900"))
+    (check-true (valid-font-weight? 100))
+  (check-true (valid-font-weight? 300))
+  (check-true (valid-font-weight? 900))
   (check-false (valid-font-weight? "italic"))
   (check-false (valid-font-weight? "1000")))
 
@@ -120,7 +124,8 @@
   (let* ([url (->url src-url)]
          [url-value (if base64? (path->base64-font-string src-url) (->path url))]
          [src (format "url('~a') format('~a')" url-value (font-format src-url))]
-         [src (string-append (if local-name (format "local(~v), " local-name) "") src)])
+         [src (string-append (if local-name (format "local(~v), " local-name) "") src)]
+         [font-weight (format "~a" font-weight)])
     (string-append "@font-face {\n" 
                    (join-css-strings (append
                                       (map make-css-string 
